@@ -4,11 +4,22 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class Planets {
+public class Planets extends AbstractCelestialObject {
+	private List<Satellite> satellites;
 	private List<Planets> planets;
 
+	// Constructor for the solar system
 	public Planets() {
+		super("Solar System", 0, 0, 0, 0, 0);
 		this.planets = new ArrayList<>();
+		this.satellites = new ArrayList<>();
+	}
+
+	// Constructor for a single planet
+	public Planets(String name, double gravity, double mass, double radius, 
+				  double rotationPeriod, double orbitalPeriod) {
+		super(name, gravity, mass, radius, rotationPeriod, orbitalPeriod);
+		this.satellites = new ArrayList<>();
 	}
 
 	public void registerPlanet(Planets planet) {
@@ -17,50 +28,21 @@ public class Planets {
 
 	public Planets getPlanetWithBiggestRadius() {
 		return planets.stream()
-			.max((p1, p2) -> Double.compare(p1.getRadius(), p2.getRadius()))
-			.orElse(null);
-	}	
+				.max((p1, p2) -> Double.compare(p1.getRadius(), p2.getRadius()))
+				.orElseThrow(() -> new IllegalStateException("No planets registered"));
+	}
 
 	public List<Planets> getPlanetsSortedBySatellites() {
 		return planets.stream()
-			.sorted((p1, p2) -> Integer.compare(p2.getNumberOfSatellites(), 
-											  p1.getNumberOfSatellites()))
-			.collect(Collectors.toList());
-	}		
-
-	public static void main(String[] args) {
-		Planets solarSystem = new Planets();
-//Ejemplo de uso
-		Planets earth = new Planets();
-		Satellite moon = new Satellite("Moon", 1.62, 7.34767309e22, 1.737e6, 27.32, 27.32);
-		earth.addSatellite(moon);
-		
-		solarSystem.registerPlanet(earth);
-		
-
-		
-		Planets biggestPlanet = solarSystem.getPlanetWithBiggestRadius();
-		System.out.println("Planet with the biggets radius " + biggestPlanet.getName());
-
-		
-		List<Planets> sortedPlanets = solarSystem.getPlanetsSortedBySatellites();
-		System.out.println("Planets sorted by number of satellites");
-		sortedPlanets.forEach(p -> 
-			System.out.println(p.getName() + ": " + p.getNumberOfSatellites()));
+				.sorted((p1, p2) -> Integer.compare(p2.getNumberOfSatellites(), p1.getNumberOfSatellites()))
+				.collect(Collectors.toList());
 	}
 
-	private String getName() {
-		// TODO Auto-generated method stub
-		return null;
+	public int getNumberOfSatellites() {
+		return satellites.size();
 	}
 
-	private int getNumberOfSatellites() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	private void addSatellite(Satellite moon) {
-		// TODO Auto-generated method stub
-		
+	public void addSatellite(Satellite satellite) {
+		satellites.add(satellite);
 	}
 }
